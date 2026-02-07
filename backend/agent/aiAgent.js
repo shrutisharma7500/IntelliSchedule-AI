@@ -80,29 +80,62 @@ export async function runAgent(userMessage, userConfig = {}) {
     let reminderMsg = finalActions.find(a => (a.type || "").includes("remind"))?.message || "";
     let context = (userMessage + " " + reminderMsg).toLowerCase();
 
-    // 🕰️ Better time extraction & normalization
-    const timeMatch = context.match(/(\d{1,2})(:\d{2})?\s*(am|pm)?/);
+    const timeRegex = /(1[0-2]|0?[1-9])([:|.][0-5][0-9])?\s*(am|pm)|(2[0-3]|[01]?[0-9])[:|.]([0-5][0-9])|(1[0-2]|[1-9])\s*(am|pm)/gi;
+    const timeMatch = timeRegex.exec(context);
+
     let hour = 10;
     let minute = "00";
 
     if (timeMatch) {
-      hour = parseInt(timeMatch[1]);
-      if (timeMatch[2]) minute = timeMatch[2].substring(1);
-      const ampm = timeMatch[3];
-      if (ampm === "pm" && hour < 12) hour += 12;
-      if (ampm === "am" && hour === 12) hour = 0;
+      console.log("📍 Time found in context:", timeMatch[0]);
+      // Handle cases like "4:30pm", "4.30pm", "4pm", "16:30"
+      if (timeMatch[1]) { // am/pm format with optional minute
+        hour = parseInt(timeMatch[1]);
+        if (timeMatch[2]) minute = timeMatch[2].substring(1);
+        const ampm = timeMatch[3].toLowerCase();
+        if (ampm === "pm" && hour < 12) hour += 12;
+        if (ampm === "am" && hour === 12) hour = 0;
+      } else if (timeMatch[4]) { // 24h format
+        hour = parseInt(timeMatch[4]);
+        minute = timeMatch[5];
+      } else if (timeMatch[6]) { // simple hour + am/pm
+        hour = parseInt(timeMatch[6]);
+        const ampm = timeMatch[7].toLowerCase();
+        if (ampm === "pm" && hour < 12) hour += 12;
+        if (ampm === "am" && hour === 12) hour = 0;
+      }
     }
 
-    const formattedTime = `${hour.toString().padStart(2, "0")}:${minute}`;
+    const formattedTime = `${hour.toString().padStart(2, "0")}:${minute.replace(".", ":")}`;
+    console.log(`🕒 Extracted Time: ${formattedTime}`);
 
     // 📅 DATE SMART-LOGIC: Use local time context
     const now = new Date();
     let date = now.toISOString().split("T")[0];
 
-    if (hour < now.getHours() || (hour === now.getHours() && parseInt(minute) <= now.getMinutes())) {
-      now.setDate(now.getDate() + 1);
+    // Check for day names in context
+    const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+    const dayFound = days.find(d => context.includes(d));
+
+    if (dayFound) {
+      const targetDayIndex = days.indexOf(dayFound);
+      const currentDayIndex = now.getDay();
+      let daysToAdd = targetDayIndex - currentDayIndex;
+      if (daysToAdd <= 0) daysToAdd += 7; // Next occurrence of that day
+
+      now.setDate(now.getDate() + daysToAdd);
       date = now.toISOString().split("T")[0];
-      console.log(`🕒 Time ${formattedTime} has passed today. Booking for tomorrow: ${date}`);
+      console.log(`📅 Day name '${dayFound}' detected. Target date: ${date}`);
+    } else {
+      // If time is in the past today, move to tomorrow
+      const scheduledTotalMins = (hour * 60) + parseInt(minute);
+      const nowTotalMins = (now.getHours() * 60) + now.getMinutes();
+
+      if (scheduledTotalMins <= nowTotalMins) {
+        now.setDate(now.getDate() + 1);
+        date = now.toISOString().split("T")[0];
+        console.log(`➡️ Time has passed today. Moving to tomorrow: ${date}`);
+      }
     }
 
     finalActions.unshift({

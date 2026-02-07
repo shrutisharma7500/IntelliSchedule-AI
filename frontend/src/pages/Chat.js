@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Send, Calendar, Sparkles, AlertCircle, CheckCircle2, Clock, Settings as SettingsIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
+import api from "../api";
 
 function Chat() {
     const [message, setMessage] = useState("");
@@ -27,10 +27,7 @@ function Chat() {
         setLoading(true);
 
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.post("/chat", { message }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.post("/chat", { message });
             const data = res.data;
 
             setChat((prev) => [

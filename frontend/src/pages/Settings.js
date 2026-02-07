@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Settings as SettingsIcon, Save, LogOut, Key, Calendar, Mail } from "lucide-react";
-import axios from "axios";
+import api from "../api";
 
 function Settings() {
     const [calApiKey, setCalApiKey] = useState("");
@@ -20,10 +20,7 @@ function Settings() {
 
     const fetchSettings = async () => {
         try {
-            const token = localStorage.getItem("token");
-            const res = await axios.get("/settings", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get("/settings");
             setCalEventTypeId(res.data.calEventTypeId || "");
             setCalUsername(res.data.calUsername || "");
             setSmtpUser(res.data.smtpUser || "");
@@ -38,15 +35,12 @@ function Settings() {
         setMessage("");
 
         try {
-            const token = localStorage.getItem("token");
-            await axios.put("/settings", {
+            await api.put("/settings", {
                 calApiKey,
                 calEventTypeId,
                 calUsername,
                 smtpUser,
                 smtpPass
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             setMessage("Settings saved successfully!");
             setCalApiKey(""); // Clear sensitive fields after save

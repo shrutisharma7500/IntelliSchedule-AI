@@ -12,9 +12,15 @@ function extractJSON(text) {
 }
 
 export async function askLLM({ message }) {
+  const now = new Date();
+  const dateStr = now.toISOString().split("T")[0];
+  const dayName = now.toLocaleDateString('en-US', { weekday: 'long' });
+
   const prompt = `
 ### TASK ###
 Extract scheduling actions from the user request.
+Current Date: ${dateStr} (${dayName})
+
 If the request mentions a meeting, sync, or time, you MUST include a "schedule_meeting" action.
 
 ### TOOLS ###
@@ -23,17 +29,13 @@ If the request mentions a meeting, sync, or time, you MUST include a "schedule_m
 
 ### RULES ###
 - Respond ONLY with JSON.
+- If a specific date like "Monday" or "October 25th" is mentioned, calculate the correct "YYYY-MM-DD" based on Current Date.
+- If no date is mentioned, assume ${dateStr}.
 - If a reminder is requested, include BOTH actions.
 
 ### EXAMPLES ###
-User: "Schedule sync tomorrow 10am and remind me 5m before"
-Result:
-{
-  "actions": [
-    { "type": "schedule_meeting", "date": "2024-05-20", "time": "10:00", "title": "Sync" },
-    { "type": "set_reminder", "minutes_before": 5, "message": "Meeting Sync" }
-  ]
-}
+User: "Schedule sync tomorrow 10am"
+Result: { "actions": [{ "type": "schedule_meeting", "date": "2026-02-08", "time": "10:00", "title": "Sync" }] }
 
 User request: "${message}"`;
 
