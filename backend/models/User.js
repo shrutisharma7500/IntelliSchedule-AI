@@ -47,11 +47,17 @@ userSchema.pre("save", async function () {
         return;
     }
 
+    // Safety: If it's already a bcrypt hash, don't hash it again
+    if (this.password.startsWith("$2b$") && this.password.length === 60) {
+        console.log("Password already looks like a hash, skipping double-hashing");
+        return;
+    }
+
     try {
         console.log("Hashing password for user:", this.email);
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
-        console.log("Password hashed successfully");
+        console.log("Password hashed successfully. Length:", this.password.length);
     } catch (err) {
         console.error("Hashing error:", err);
         throw err;
@@ -60,12 +66,22 @@ userSchema.pre("save", async function () {
 
 // Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword) {
+    console.log("--- AUTH DIAGNOSTIC ---");
     console.log("Comparing passwords for user:", this.email);
     try {
-        console.log("Candidate password provided:", !!candidatePassword);
-        console.log("Stored hash available:", !!this.password);
+        const inputLen = (candidatePassword || "").length;
+        const storedLen = (this.password || "").length;
+
+        console.log("Input password length:", inputLen);
+        console.log("Stored hash length:", storedLen);
+
+        if (inputLen > 0) {
+            console.log(`Input preview: ${candidatePassword[0]}***${candidatePassword[inputLen - 1]}`);
+        }
+
         const isMatch = await bcrypt.compare(candidatePassword, this.password);
         console.log("Match result:", isMatch);
+        console.log("------------------------");
         return isMatch;
     } catch (err) {
         console.error("Comparison error:", err);
