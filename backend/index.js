@@ -35,7 +35,10 @@ const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/intellisch
 // Connect to MongoDB
 mongoose.connect(MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.error("❌ MongoDB connection error:", err));
+  .catch(err => {
+    console.error("❌ MongoDB connection error detail:");
+    console.dir(err);
+  });
 
 app.listen(PORT, () => {
   console.log(`🚀 MCP Server running on http://localhost:${PORT}`);
