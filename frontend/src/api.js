@@ -2,6 +2,7 @@ import axios from "axios";
 
 // Fallback to local 5000 if no env variable is set
 const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+console.log("📍 Frontend connecting to API at:", API_BASE_URL);
 
 const api = axios.create({
     baseURL: API_BASE_URL,

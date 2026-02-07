@@ -8,7 +8,11 @@ import settingsRoute from "./routes/settings.route.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 // Request logging middleware
@@ -18,6 +22,9 @@ app.use((req, res, next) => {
 });
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("🚀 IntelliSchedule AI Backend is running!");
+});
 app.use("/chat", chatRoute);
 app.use("/auth", authRoute);
 app.use("/settings", settingsRoute);
