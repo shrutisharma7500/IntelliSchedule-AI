@@ -63,9 +63,17 @@ export async function scheduleMeeting(data, userConfig = {}) {
       console.error("❌ Logic Error: Use validTime instead of formattedTime");
     }
     console.error("Cal.com API Error:", error.response?.data || error.message);
+
+    let userFriendlyMessage = error.response?.data?.message || error.message || "Failed to create Cal.com event";
+
+    // Better message for the common availability error
+    if (userFriendlyMessage === "no_available_users_found_error") {
+      userFriendlyMessage = "No availability found for this time. Please check your Cal.com working hours (especially for weekends) or try a different slot.";
+    }
+
     return {
       status: "error",
-      message: error.response?.data?.message || error.message || "Failed to create Cal.com event"
+      message: userFriendlyMessage
     };
   }
 }

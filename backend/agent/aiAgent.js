@@ -72,7 +72,8 @@ export async function runAgent(userMessage, userConfig = {}) {
 
   // 🛡️ SECURITY CHECK: If tinyllama missed the 'schedule_meeting' but it's clearly needed
   const hasSchedule = finalActions.some(a => (a.type || a.name || a.tool || "").toLowerCase().includes("sche"));
-  const needsSchedule = userMessage.toLowerCase().includes("schedule") || userMessage.toLowerCase().includes("meeting") || userMessage.toLowerCase().includes("sync");
+  const isErrorReport = userMessage.toLowerCase().includes("failed") || userMessage.toLowerCase().includes("error");
+  const needsSchedule = !isErrorReport && (userMessage.toLowerCase().includes("schedule") || userMessage.toLowerCase().includes("meeting") || userMessage.toLowerCase().includes("sync"));
 
   if (!hasSchedule && needsSchedule) {
     console.log("⚠️ LLM missed schedule action. Auto-injecting...");
