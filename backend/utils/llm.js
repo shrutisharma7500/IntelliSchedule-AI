@@ -1,14 +1,15 @@
-import axios from "axios";
+import OpenAI from "openai";
 import "dotenv/config";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // 🔹 Extract valid JSON from messy LLM output
 function extractJSON(text) {
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) return null;
-
-  let jsonText = match[0];
-  jsonText = jsonText.replace(/\/\/.*$/gm, "");
-  return jsonText;
+  return match[0].replace(/\/\/.*$/gm, "");
 }
 
 export async function askLLM({ message }) {
@@ -16,58 +17,46 @@ export async function askLLM({ message }) {
   const dateStr = now.toISOString().split("T")[0];
   const dayName = now.toLocaleDateString('en-US', { weekday: 'long' });
 
-  const prompt = `
-### TASK ###
-Extract scheduling actions from the user request.
-Current Date: ${dateStr} (${dayName})
-
-If the request mentions a meeting, sync, or time, you MUST include a "schedule_meeting" action.
-
-### TOOLS ###
+  const systemsPrompt = `You are a scheduling assistant. 
+Current Date: ${dateStr} (${dayName}).
+Extract actions from user requests.
+TOOLS:
 1. "schedule_meeting": { "date": "YYYY-MM-DD", "time": "HH:MM", "title": "string" }
 2. "set_reminder": { "minutes_before": number, "message": "string" }
+3. "check_availability": { "date": "YYYY-MM-DD" }
 
-### RULES ###
-- Respond ONLY with JSON.
-- If a specific date like "Monday" or "October 25th" is mentioned, calculate the correct "YYYY-MM-DD" based on Current Date.
-- If no date is mentioned, assume ${dateStr}.
-- If a reminder is requested, include BOTH actions.
-
-### EXAMPLES ###
-User: "Schedule sync tomorrow 10am"
-Result: { "actions": [{ "type": "schedule_meeting", "date": "2026-02-08", "time": "10:00", "title": "Sync" }] }
-
-User request: "${message}"`;
+RULES:
+- Respond ONLY with JSON in format: { "actions": [...] }
+- If a meeting is mentioned, include "schedule_meeting".
+- If no date is mentioned, use ${dateStr}.
+- Calculate relative dates (e.g., "tomorrow") based on ${dateStr}.`;
 
   try {
-    const response = await axios.post("http://localhost:11434/api/generate", {
-      model: "tinyllama",
-      prompt,
-      stream: false,
-      format: "json",
-      options: {
-        temperature: 0,
-        num_predict: 256
-      }
+    if (!process.env.OPENAI_API_KEY) {
+      console.log("⚠️ OPENAI_API_KEY missing. Falling back to Ollama...");
+      // Optional fallback to Ollama if local
+      return { actions: [] };
+    }
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemsPrompt },
+        { role: "user", content: message }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0
     });
 
-    const raw = response.data.response;
-    console.log("🧠 RAW LLM OUTPUT:\n", raw);
+    const raw = response.choices[0].message.content;
+    console.log("🧠 OPENAI OUTPUT:\n", raw);
 
     const cleaned = extractJSON(raw);
     if (!cleaned) return { actions: [] };
 
-    try {
-      return JSON.parse(cleaned);
-    } catch (err) {
-      console.error("❌ JSON PARSE FAILED", err);
-      return { actions: [] };
-    }
+    return JSON.parse(cleaned);
   } catch (error) {
-    console.error("❌ Ollama API Error:", error.message);
-    if (error.message.includes("404")) {
-      console.log("⚠️ tinyllama model not found. Run 'ollama pull tinyllama'");
-    }
+    console.error("❌ AI Error:", error.message);
     return { actions: [] };
   }
 }
