@@ -39,9 +39,11 @@ function Chat() {
                 }
             ]);
         } catch (err) {
+            console.error("Chat Error:", err);
+            const detail = err.response?.data?.error || err.response?.data?.message || err.message;
             const errorMsg = err.response?.status === 401
                 ? "Session expired. Please login again."
-                : "❌ Error: Could not reach the planner. Is the backend running?";
+                : `❌ Error: ${detail}. (Status: ${err.response?.status || 'Network Error'})`;
 
             setChat((prev) => [
                 ...prev,

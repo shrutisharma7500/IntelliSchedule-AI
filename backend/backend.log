@@ -1,0 +1,80 @@
+2026-02-22T16:36:58.787Z - GET /
+2026-02-22T16:37:29.631Z - GET /settings
+2026-02-22T16:37:29.656Z - GET /settings
+2026-02-22T16:38:01.967Z - POST /auth/login
+2026-02-22T16:38:20.234Z - POST /auth/login
+2026-02-22T16:38:21.308Z - POST /auth/login
+2026-02-22T16:39:03.767Z - POST /auth/login
+2026-02-22T16:47:28.354Z - POST /auth/login
+2026-02-22T16:50:31.927Z - POST /auth/login
+2026-02-22T16:50:31.931Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T16:50:31.951Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T16:50:32.096Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T16:54:40.292Z - POST /auth/login
+2026-02-22T16:54:40.298Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T16:54:40.330Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T16:54:40.488Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T16:55:09.317Z - POST /auth/rescue-password
+2026-02-22T16:55:09.323Z - [AUTH] ❌ RESCUE FAILED: Gmail App Pass mismatch for: shrutisharma7263@gmail.com
+2026-02-22T16:55:29.081Z - POST /auth/rescue-password
+2026-02-22T16:55:29.086Z - [AUTH] ❌ RESCUE FAILED: Gmail App Pass mismatch for: shrutisharma7263@gmail.com
+2026-02-22T16:55:30.413Z - POST /auth/rescue-password
+2026-02-22T16:55:30.418Z - [AUTH] ❌ RESCUE FAILED: Gmail App Pass mismatch for: shrutisharma7263@gmail.com
+2026-02-22T16:56:13.472Z - POST /auth/rescue-password
+2026-02-22T16:56:13.475Z - [AUTH] ❌ RESCUE FAILED: Gmail App Pass mismatch for: shrutisharma7263@gmail.com
+2026-02-22T16:59:36.858Z - POST /auth/login
+2026-02-22T16:59:36.862Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T16:59:36.879Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T16:59:37.024Z - [AUTH] 🧐 Bcrypt failed. Checking raw SMTP Pass fallback...
+2026-02-22T16:59:37.026Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:01:56.194Z - POST /auth/login
+2026-02-22T17:01:56.197Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T17:01:56.214Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T17:01:56.337Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:01:58.839Z - POST /auth/login
+2026-02-22T17:01:58.841Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T17:01:58.847Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T17:01:58.997Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:02:33.612Z - POST /auth/rescue-password
+2026-02-22T17:02:33.617Z - [AUTH] ❌ RESCUE FAILED: Gmail App Pass mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:07:42.941Z - POST /auth/login
+2026-02-22T17:07:42.946Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T17:07:42.973Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T17:07:43.155Z - [AUTH] 🧐 Local password mismatch. Attempting live Gmail verification...
+2026-02-22T17:07:44.205Z - [AUTH] Gmail Verification Failed for shrutisharma7263@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ad7500e346sm64777965ad.49 - gsmtp
+2026-02-22T17:07:44.207Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:08:26.859Z - POST /auth/login
+2026-02-22T17:08:26.861Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T17:08:26.865Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T17:08:26.960Z - [AUTH] 🧐 Local password mismatch. Attempting live Gmail verification...
+2026-02-22T17:08:27.806Z - [AUTH] Gmail Verification Failed for shrutisharma7263@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ad75090177sm47723845ad.47 - gsmtp
+2026-02-22T17:08:27.809Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:08:29.062Z - POST /auth/login
+2026-02-22T17:08:29.064Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T17:08:29.070Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T17:08:29.218Z - [AUTH] 🧐 Local password mismatch. Attempting live Gmail verification...
+2026-02-22T17:08:30.080Z - [AUTH] Gmail Verification Failed for shrutisharma7263@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-826dd86c4a1sm5476420b3a.37 - gsmtp
+2026-02-22T17:08:30.081Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:13:29.969Z - POST /auth/login
+2026-02-22T17:13:29.971Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T17:13:29.975Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T17:13:30.081Z - [AUTH] 🧐 Local password mismatch. Attempting live Gmail verification...
+2026-02-22T17:13:30.945Z - [AUTH] Gmail Verification Failed for shrutisharma7263@gmail.com: Invalid login: 534-5.7.9 Application-specific password required. For more information, go to
+534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor d2e1a72fcca58-826dd86c5d7sm5246965b3a.41 - gsmtp
+2026-02-22T17:13:30.946Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:14:47.498Z - POST /auth/login
+2026-02-22T17:14:47.500Z - [AUTH] Login attempt for: shrutisharma7263@gmail.com
+2026-02-22T17:14:47.505Z - [AUTH] 👤 User found: shrutisharma7263@gmail.com. Comparing passwords...
+2026-02-22T17:14:47.625Z - [AUTH] 🧐 Local password mismatch. Attempting live Gmail verification...
+2026-02-22T17:14:48.540Z - [AUTH] Gmail Verification Failed for shrutisharma7263@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2ad7500e1c0sm53404875ad.45 - gsmtp
+2026-02-22T17:14:48.541Z - [AUTH] ❌ FAILED: Password mismatch for: shrutisharma7263@gmail.com
+2026-02-22T17:15:49.719Z - POST /auth/login
+2026-02-22T17:15:49.720Z - [AUTH] Login attempt for: shrutisharma94827@gmail.com
+2026-02-22T17:15:49.725Z - [AUTH] 👤 User found: shrutisharma94827@gmail.com. Comparing passwords...
+2026-02-22T17:15:49.805Z - [AUTH] ✅ SUCCESS: Login successful for: shrutisharma94827@gmail.com
+2026-02-22T17:16:08.721Z - POST /chat
+2026-02-22T17:17:38.169Z - POST /chat

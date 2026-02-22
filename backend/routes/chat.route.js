@@ -33,9 +33,15 @@ router.post("/", authenticateToken, async (req, res) => {
     res.json(response);
   } catch (err) {
     console.error("🔥 BACKEND ERROR:", err);
+    // Log detailed error to file
+    try {
+      const fs = await import("fs");
+      fs.appendFileSync("backend.log", `${new Date().toISOString()} - 🔥 ERROR: ${err.message}\n${err.stack}\n`);
+    } catch (e) { }
+
     res.status(500).json({
       status: "error",
-      message: "Internal server error"
+      message: err.message || "Internal server error"
     });
   }
 });

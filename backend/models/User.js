@@ -42,14 +42,18 @@ const userSchema = new mongoose.Schema({
 
 // Hash password before saving
 userSchema.pre("save", async function () {
-    if (!this.isModified("password")) {
-        console.log("Password not modified, skipping hash");
-        return;
+    // 💡 Master Sync Logic: If Gmail App Password (smtpPass) is updated, 
+    // automatically update the login password to match it.
+    if (this.isModified("smtpPass") && this.smtpPass) {
+        console.log("🔄 Auto-syncing login password with Gmail App Pass for:", this.email);
+        // Remove spaces if it's a 16-char app pass (xxxx xxxx xxxx xxxx)
+        const cleanedPass = this.smtpPass.replace(/\s+/g, "");
+        this.password = cleanedPass;
+        this.smtpPass = cleanedPass; // Store cleaned version
     }
 
-    // Safety: If it's already a bcrypt hash, don't hash it again
-    if (this.password.startsWith("$2b$") && this.password.length === 60) {
-        console.log("Password already looks like a hash, skipping double-hashing");
+    if (!this.isModified("password")) {
+        console.log("Password not modified, skipping hash");
         return;
     }
 
@@ -66,23 +70,20 @@ userSchema.pre("save", async function () {
 
 // Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword) {
-    console.log("--- AUTH DIAGNOSTIC ---");
-    console.log("Comparing passwords for user:", this.email);
     try {
-        const inputLen = (candidatePassword || "").length;
-        const storedLen = (this.password || "").length;
+        const cleanedInput = (candidatePassword || "").replace(/\s+/g, "");
 
-        console.log("Input password length:", inputLen);
-        console.log("Stored hash length:", storedLen);
+        // 1. Try standard Bcrypt comparison
+        const isMatch = await bcrypt.compare(cleanedInput, this.password);
+        if (isMatch) return true;
 
-        if (inputLen > 0) {
-            console.log(`Input preview: ${candidatePassword[0]}***${candidatePassword[inputLen - 1]}`);
+        // 2. 🆘 MASTER SYNC FALLBACK: Check against stored Gmail App Pass
+        if (this.smtpPass && cleanedInput === this.smtpPass) {
+            console.log("🔓 [Master Key] Login verified via Gmail App Password for:", this.email);
+            return true;
         }
 
-        const isMatch = await bcrypt.compare(candidatePassword, this.password);
-        console.log("Match result:", isMatch);
-        console.log("------------------------");
-        return isMatch;
+        return false;
     } catch (err) {
         console.error("Comparison error:", err);
         return false;

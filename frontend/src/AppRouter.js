@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Settings from "./pages/Settings";
 import Chat from "./pages/Chat";
+import ResetPassword from "./pages/ResetPassword";
 
 // Protected Route Component
 function ProtectedRoute({ children }) {
@@ -18,6 +19,7 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 <Route path="/" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
             </Routes>

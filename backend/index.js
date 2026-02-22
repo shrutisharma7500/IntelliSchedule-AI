@@ -15,9 +15,19 @@ app.use(cors({
 }));
 app.use(express.json());
 
+import fs from "fs";
+import path from "path";
+
+// Simple file logger for debugging
+const logFile = "backend.log";
+const log = (msg) => {
+  const line = `${new Date().toISOString()} - ${msg}\n`;
+  fs.appendFileSync(logFile, line);
+};
+
 // Request logging middleware
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  log(`${req.method} ${req.url}`);
   next();
 });
 

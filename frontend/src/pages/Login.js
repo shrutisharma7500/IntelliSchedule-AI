@@ -91,6 +91,9 @@ function Login() {
                 <p style={{ textAlign: "center", marginTop: 20, fontSize: "0.9rem", color: "var(--text-dim)" }}>
                     Don't have an account? <Link to="/register" style={{ color: "var(--primary)", textDecoration: "none", fontWeight: 600 }}>Sign up</Link>
                 </p>
+                <p style={{ textAlign: "center", marginTop: 10, fontSize: "0.85rem", color: "var(--text-dim)" }}>
+                    Forgot your login password? <Link to="/reset-password" style={{ color: "var(--acc-blue)", textDecoration: "none" }}>Rescue it here</Link>
+                </p>
             </motion.div>
         </div>
     );
