@@ -22,10 +22,22 @@ export async function scheduleMeeting(data, userConfig = {}) {
 
     // Safety check for time format (HH:mm)
     const validTime = time.match(/^\d{2}:\d{2}$/) ? time : "10:00";
-    // 🌍 IMPORTANT: Cal.com v1 needs an offset to match your IST timezone.
-    const isoStart = `${date}T${validTime}:00+05:30`;
 
-    console.log("🚀 Cal.com Payload:", { date, validTime, isoStart, userTimeZone });
+    // 🌍 IMPORTANT: Cal.com v1 needs an offset to match your IST timezone.
+    let finalDate = date;
+    let isoStart = `${finalDate}T${validTime}:00+05:30`;
+
+    // 🚀 FUTURE GUARD: If requested time is in the past, move to tomorrow
+    const requestedDate = new Date(isoStart);
+    const now = new Date();
+    if (requestedDate < now) {
+      console.log(`⚠️ Time ${isoStart} is in the past. Shifting to tomorrow...`);
+      requestedDate.setDate(requestedDate.getDate() + 1);
+      finalDate = requestedDate.toISOString().split("T")[0];
+      isoStart = `${finalDate}T${validTime}:00+05:30`;
+    }
+
+    console.log("🚀 Cal.com Payload:", { finalDate, validTime, isoStart, userTimeZone });
 
     const response = await axios.post(
       `https://api.cal.com/v1/bookings?apiKey=${apiKey}`,
@@ -55,7 +67,7 @@ export async function scheduleMeeting(data, userConfig = {}) {
       status: "success",
       meetingId: bookingUid,
       meetingLink: bookingUid,
-      date: date,
+      date: finalDate,
       time: validTime
     };
   } catch (error) {

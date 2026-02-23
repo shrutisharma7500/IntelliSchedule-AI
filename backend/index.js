@@ -2,6 +2,8 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import fs from "fs";
+import path from "path";
 import chatRoute from "./routes/chat.route.js";
 import authRoute from "./routes/auth.route.js";
 import settingsRoute from "./routes/settings.route.js";
@@ -14,9 +16,6 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
-
-import fs from "fs";
-import path from "path";
 
 // Simple file logger for debugging
 const logFile = "backend.log";

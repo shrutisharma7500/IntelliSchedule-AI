@@ -23,10 +23,12 @@ function extractJSON(text) {
 export async function askLLM({ message }) {
   const now = new Date();
   const dateStr = now.toISOString().split("T")[0];
+  const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
   const dayName = now.toLocaleDateString('en-US', { weekday: 'long' });
 
   const systemsPrompt = `You are a scheduling assistant. 
 Current Date: ${dateStr} (${dayName}).
+Current Time: ${timeStr}.
 Extract actions from user requests.
 TOOLS:
 1. "schedule_meeting": { "date": "YYYY-MM-DD", "time": "HH:MM", "title": "string" }
@@ -37,6 +39,7 @@ RULES:
 - Respond ONLY with JSON in format: { "actions": [...] }
 - If a meeting is mentioned, include "schedule_meeting".
 - If no date is mentioned, use ${dateStr}.
+- If the requested time has already passed today, use tomorrow's date.
 - Calculate relative dates (e.g., "tomorrow") based on ${dateStr}.`;
 
   try {
