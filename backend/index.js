@@ -22,7 +22,13 @@ import path from "path";
 const logFile = "backend.log";
 const log = (msg) => {
   const line = `${new Date().toISOString()} - ${msg}\n`;
-  fs.appendFileSync(logFile, line);
+  try {
+    fs.appendFileSync(logFile, line);
+  } catch (err) {
+    // In many cloud environments (Render, Vercel), the file system is read-only
+    // We'll just log to console instead
+    console.log(`[LOG] ${line.trim()}`);
+  }
 };
 
 // Request logging middleware

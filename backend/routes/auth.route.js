@@ -9,7 +9,11 @@ const router = express.Router();
 
 const log = (msg) => {
     const line = `${new Date().toISOString()} - [AUTH] ${msg}\n`;
-    fs.appendFileSync("backend.log", line);
+    try {
+        fs.appendFileSync("backend.log", line);
+    } catch (err) {
+        console.log(`[AUTH LOG] ${line.trim()}`);
+    }
 };
 
 async function verifyGmail(email, password) {

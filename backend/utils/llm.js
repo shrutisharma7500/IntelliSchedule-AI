@@ -1,9 +1,17 @@
 import OpenAI from "openai";
 import "dotenv/config";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Utility to get OpenAI client safely
+let _openai = null;
+const getOpenAIClient = () => {
+  if (!process.env.OPENAI_API_KEY) return null;
+  if (!_openai) {
+    _openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return _openai;
+};
 
 // 🔹 Extract valid JSON from messy LLM output
 function extractJSON(text) {
@@ -32,8 +40,9 @@ RULES:
 - Calculate relative dates (e.g., "tomorrow") based on ${dateStr}.`;
 
   try {
-    if (!process.env.OPENAI_API_KEY) {
-      console.log("⚠️ OPENAI_API_KEY missing. Falling back to Ollama...");
+    const openai = getOpenAIClient();
+    if (!openai) {
+      console.log("⚠️ OPENAI_API_KEY missing. Falling back to default (no actions)...");
       // Optional fallback to Ollama if local
       return { actions: [] };
     }
